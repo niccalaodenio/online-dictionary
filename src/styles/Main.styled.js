@@ -58,7 +58,10 @@ export const Main = styled.main`
   flex-direction: column;
   padding: clamp(1rem, 0.5rem + 8vw, 1.5rem);
   justify-content: space-between;
- 
+  
+  .err_msg {
+    font-size: 1.3rem;
+  }
   .ms-2{
     margin-left: 1.2rem;
   }
@@ -170,6 +173,9 @@ export const Res = styled.section`
     font-family: var(--secondary-font);
     font-size: clamp(.7rem, 1rem + 2vw, 1.2rem);
     margin-block: 8px;
+    span {
+      cursor: pointer;
+    }
   }
 
   .syno {

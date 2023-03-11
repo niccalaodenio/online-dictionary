@@ -109,9 +109,9 @@ function App() {
             <div className="ms-2">{res}</div>
           ) : (
             <div>
-              <h3>{Meaning.title}</h3>
+              <h2>{Meaning.title}</h2>
               <p>
-                <em>{Meaning.msg}</em>
+                <em className="err_msg">{Meaning.msg}</em>
               </p>
             </div>
           )}
