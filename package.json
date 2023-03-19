@@ -1,5 +1,4 @@
 {
-  "homepage": "http://niccalaodenio.github.io/online-dictionary",
   "name": "dictionary",
   "private": true,
   "version": "0.0.0",
@@ -7,12 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
-
+    "preview": "vite preview"
   },
   "dependencies": {
+    "firebase": "^9.17.2",
     "gh-pages": "^5.0.0",
     "lodash.debounce": "^4.0.8",
     "nanoid": "^4.0.1",

@@ -2,13 +2,14 @@ import { nanoid } from "nanoid";
 import React from "react";
 import { Res } from "../styles/Main.styled";
 import {FiVolume2} from 'react-icons/fi'
+ 
 const Result = (props) => { 
   let aud = new Audio(props.mean.audio);
   function Play (e) {
     e.preventDefault()
     e.stopPropagation()
     props.mean.audio === undefined
-      ? alert("this word does not contain audio pronounciation")
+      ? alert("Ops! sorry, this word does not contain audio pronunciation")
       : aud.play();
   }
 
