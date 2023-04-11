@@ -16,7 +16,7 @@ const Result = (props) => {
   return (
     <Res>
       <div className="word__pos">
-        <h1>{props.mean.word}</h1>
+        <h1>{props.mean.word }</h1>
         <p className="pos">{props.partOfSpeech}</p>
       </div>
       <p className="netics">{props?.mean?.netic} <span onClick={(e) => Play(e)}>< FiVolume2 size={17} color="#219EBC"/> </span></p>

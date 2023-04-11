@@ -5,7 +5,6 @@ import Result from "./components/Result";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { Global, Main } from "./styles/Main.styled";
 import Homepage from "./components/Homepage";
-import useFetch from "./hook/useFetch";
 function App() {
   const [Meaning, setMeaning] = useState(() => {
     return {
@@ -20,11 +19,7 @@ function App() {
   const [word, setWord] = useState("");
   const [count, setCount] = useState(() => 0);
   const [isLoading, setIsLoading] = useState(false);
- 
-  const [data, setData] = useFetch(
-    `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
-  );
-
+  const [searchResult, setSearchResult] = useState(() => []);
   useEffect(() => {
     async function getData() {
       setIsLoading(true);
@@ -33,8 +28,8 @@ function App() {
           `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
         );
         const data = await res.json();
-        // let meanings = data[0]?.meanings;
-        const meanings = useMemo(() => data?.[0]?.meanings ?? [], [data]);
+        let meanings = data[0]?.meanings;
+        // console.log(data[0]);
         // let audioUrl = data[0].phonetics?.[0]?.audio
         setMeaning(() => {
           let M = data[0]?.meanings ?? [];
@@ -61,7 +56,7 @@ function App() {
           }
         });
       } catch (err) {
-        // console.log(err)
+        console.log(err);
         if (!navigator.onLine) {
           alert(
             "Network Error: Please check your internet connection and try again."
@@ -75,12 +70,10 @@ function App() {
   }, [count]);
   // console.log(Meaning);
 
-  /*   
- my own code
-let res = Meaning?.means?.map((e, i) => (
+  //my own code
+  /* let res = Meaning?.means?.map((e, i) => (
     <Result key={i} {...e} mean={Meaning} />
   )); */
-
   let res = useMemo(
     () =>
       Meaning?.means?.map((e, i) => <Result key={i} {...e} mean={Meaning} />),
@@ -92,30 +85,40 @@ let res = Meaning?.means?.map((e, i) => (
   /*   let d = Meaning.means.map(i => i.definitions)
    d.forEach((child) => child.map(i => console.log(i.definition)))  */
 
-  // const handleChange = (e) => {
-  //   const { value } = e.target;
-  //   setWord(value);
-  // };
-  /*   const submit = (e) => {
+  const handleChange = (e) => {
+    const { value } = e.target;
+    setWord(value);
+  };
+
+  const handleSearch = debounce(handleChange, 200);
+
+  const submit = (e) => {
     e.preventDefault();
     word === "" ? alert("Please enter some word") : setCount((p) => p + 1);
-  }; */
+    if (searchResult.includes(word)){
+      return
+    }else{
+     setSearchResult(prev => prev.length === 10 ? [...prev] : [...prev, word])
 
-  const submit = useCallback(
+    }
+
+    //searchResult.length >= 10 && setSearchResult(prev => [...prev, prev.slice(-10)])
+  };
+
+  /*   const submit = useCallback(
     (e) => {
       e.preventDefault();
       word === "" ? alert("Please enter some word") : setCount((p) => p + 1);
     },
     [setCount, word]
-  );
-  const handleSearch = useCallback(
+  ); */
+  /*  const handleSearch = useCallback(
     debounce((value) => {
-      setWord(value);
+        setWord(value)
     }, 150),
-    []
-  );
-
-  // const handleSearch = debounce(handleChange , 150)
+    [],
+  ) */
+  //console.log(searchResult);
 
   function reset() {
     setMeaning({
@@ -128,7 +131,12 @@ let res = Meaning?.means?.map((e, i) => (
     });
     setWord("");
   }
+  function historyMean(e, i){
+    setWord(i)
+    console.log(word)
+  }
 
+  let hstry = searchResult.map((i, e) => <span key={e} onClick={() => historyMean(e, i) }>{i}</span>)
   // <FetchData w={word} c={count}/>
   return (
     <>
@@ -146,8 +154,8 @@ let res = Meaning?.means?.map((e, i) => (
                   type="search"
                   name="word"
                   id="searchBar"
-                  onChange={(event) => handleSearch(event.target.value)}
-                  // onChange={e => handleSearch(e)}
+                  //onChange={e => handleSearch(e.target.value)}
+                  onChange={(e) => handleSearch(e)}
                   placeholder="search"
                 />
                 <FiSearch className="searchbtn" size={27} onClick={submit} />
@@ -165,9 +173,10 @@ let res = Meaning?.means?.map((e, i) => (
               </p>
             </div>
           )} */}
-
-          {!word && <Homepage />}
-          {isLoading ? (
+          {!word ? (
+            <Homepage history={searchResult}/> 
+           
+          ) : isLoading ? (
             <div className="loader">
               <span className="loader__element"></span>
               <span className="loader__element"></span>
@@ -184,6 +193,7 @@ let res = Meaning?.means?.map((e, i) => (
             </div>
           )}
         </div>
+        {hstry}
         <em>
           Designed by :
           <a
