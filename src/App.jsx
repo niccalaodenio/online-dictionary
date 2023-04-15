@@ -179,7 +179,7 @@ function App() {
               </p>
             </div>
           )} */}
-          {!word ? (
+          { word.length === 0 ? (
             <Homepage history={searchResult}/> 
            
           ) : isLoading ? (
