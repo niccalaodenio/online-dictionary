@@ -5,6 +5,8 @@ import Result from "./components/Result";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { Global, Main } from "./styles/Main.styled";
 import Homepage from "./components/Homepage";
+import History from "./components/History";
+import { fetchData } from "./api";
 function App() {
   const [Meaning, setMeaning] = useState(() => {
     return {
@@ -24,20 +26,23 @@ function App() {
     async function getData() {
       setIsLoading(true);
       try {
-        const res = await fetch(
+       /*  const res = await fetch(
           `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
         );
         const data = await res.json();
-        let meanings = data[0]?.meanings;
+        */
+        const data = await fetchData(word);
+        const result = data[0]; 
+        let meanings = result?.meanings;
         // console.log(data[0]);
         // let audioUrl = data[0].phonetics?.[0]?.audio
         setMeaning(() => {
           let M = data[0]?.meanings ?? [];
           if (M !== undefined && M.length > 0) {
             return {
-              word: data[0].word,
+              word: result.word,
               netic:
-                data[0].phonetic === undefined
+                result.phonetic === undefined
                   ? data[0].phonetics
                       .map((i) => i.text)
                       .find((x) => x !== undefined && x !== "")
@@ -67,11 +72,11 @@ function App() {
       }
     }
     getData();
-  }, [count]);
+  }, [ count]);
   // console.log(Meaning);
 
   //my own code
-  /* let res = Meaning?.means?.map((e, i) => (
+ /*  let res = Meaning?.means?.map((e, i) => (
     <Result key={i} {...e} mean={Meaning} />
   )); */
   let res = useMemo(
@@ -131,12 +136,12 @@ function App() {
     });
     setWord("");
   }
-  function historyMean(e, i){
+/*   function historyMean(e, i){
     setWord(i)
     console.log(word)
-  }
+  } */
 
-  let hstry = searchResult.map((i, e) => <span key={e} onClick={() => historyMean(e, i) }>{i}</span>)
+ // let hstry = searchResult.map((i, e) => <span key={e} onClick={() => historyMean(e, i) }>{i}</span>)
   // <FetchData w={word} c={count}/>
   return (
     <>
@@ -163,6 +168,7 @@ function App() {
               </div>
             </label>
           </form>
+          
           {/*   {Meaning.means !== undefined ? (
             <div className="ms-2">{res}</div>
           ) : (
@@ -192,8 +198,10 @@ function App() {
               </p>
             </div>
           )}
+            <History sr={searchResult} set={setWord} countsetter={setCount}/>
+           
         </div>
-        {hstry}
+           
         <em>
           Designed by :
           <a
