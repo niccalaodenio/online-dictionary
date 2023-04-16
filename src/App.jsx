@@ -36,7 +36,8 @@ function App() {
         let meanings = result?.meanings;
         // console.log(data[0]);
         // let audioUrl = data[0].phonetics?.[0]?.audio
-        setMeaning(() => {
+
+    !word.length == 0 ? setMeaning(() => {
           let M = data[0]?.meanings ?? [];
           if (M !== undefined && M.length > 0) {
             return {
@@ -59,6 +60,13 @@ function App() {
               msg: data.message,
             };
           }
+        }) : setMeaning({
+          word: "",
+          netic: [],
+          means: [],
+          title: "",
+          msg: "",
+          audio: "",
         });
       } catch (err) {
         console.log(err);
@@ -72,7 +80,7 @@ function App() {
       }
     }
     getData();
-  }, [ count]);
+  }, [count]);
   // console.log(Meaning);
 
   //my own code
@@ -93,6 +101,14 @@ function App() {
   const handleChange = (e) => {
     const { value } = e.target;
     setWord(value);
+    word.length === 0 && setMeaning({
+      word: "",
+      netic: [],
+      means: [],
+      title: "",
+      msg: "",
+      audio: "",
+    });
   };
 
   const handleSearch = debounce(handleChange, 200);
@@ -103,10 +119,11 @@ function App() {
     if (searchResult.includes(word)){
       return
     }else{
-     setSearchResult(prev => prev.length === 10 ? [...prev] : [...prev, word])
-
+     setSearchResult(prev => {
+      return prev.length < 10 ? [...prev, word] : prev.slice(1)
+     } )
+     
     }
-
     //searchResult.length >= 10 && setSearchResult(prev => [...prev, prev.slice(-10)])
   };
 
@@ -123,8 +140,8 @@ function App() {
     }, 150),
     [],
   ) */
-  //console.log(searchResult);
-
+ 
+  
   function reset() {
     setMeaning({
       word: "",
@@ -181,15 +198,15 @@ function App() {
           )} */}
           { word.length === 0 ? (
             <Homepage history={searchResult}/> 
-           
+            
           ) : isLoading ? (
             <div className="loader">
-              <span className="loader__element"></span>
+              <span className="loader__element"></span> 
               <span className="loader__element"></span>
               <span className="loader__element"></span>
             </div>
           ) : Meaning.means !== undefined && word ? (
-            <div className="ms-2">{res}</div>
+            <div className="ms-2">{ res}</div>
           ) : (
             <div>
               <h2>{Meaning.title}</h2>
